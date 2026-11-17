@@ -131,7 +131,7 @@ sequenceDiagram
   Sv->>Gw: valida (Luhn, validade, CVV) e autoriza
   alt aprovado
     Gw-->>Sv: APROVADO
-    Sv->>DB: INSERT pagamento (4 últimos dígitos); pedido → PAGO
+    Sv->>DB: INSERT pagamento (4 últimos dígitos), pedido → PAGO
   else recusado
     Gw-->>Sv: RECUSADO
     Sv->>DB: INSERT pagamento (RECUSADO)
