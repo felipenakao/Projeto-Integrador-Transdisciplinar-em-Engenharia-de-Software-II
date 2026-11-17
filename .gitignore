@@ -7,3 +7,4 @@ instance/
 .coverage
 htmlcov/
 .env
+.DS_Store

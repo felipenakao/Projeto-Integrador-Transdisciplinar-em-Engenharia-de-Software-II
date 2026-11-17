@@ -1,8 +1,13 @@
 from __future__ import annotations
 
+import re
 from decimal import Decimal
 
 from app.extensions import db
+
+
+PRECO_MAXIMO = Decimal("500.00")
+_FORMATO_PRECO = re.compile(r"\d+([.,]\d{1,2})?")
 
 
 class Categoria(db.Model):
@@ -36,10 +41,13 @@ class Cupcake(db.Model):
         if not descricao or len(descricao.strip()) < 10:
             erros.append("A descrição deve ter ao menos 10 caracteres.")
         valor = None
-        try:
-            valor = Decimal(str(preco).replace(",", ".")).quantize(Decimal("0.01"))
+        texto = str(preco).strip() if preco is not None else ""
+        if not _FORMATO_PRECO.fullmatch(texto):
+            erros.append("Informe um preço válido (ex.: 12,50), apenas números com até 2 casas decimais.")
+        else:
+            valor = Decimal(texto.replace(",", ".")).quantize(Decimal("0.01"))
             if valor <= 0:
                 erros.append("O preço deve ser maior que zero.")
-        except Exception:
-            erros.append("Informe um preço válido (ex.: 12,50).")
+            elif valor > PRECO_MAXIMO:
+                erros.append("O preço não pode ser maior que R$ 500,00.")
         return valor, erros

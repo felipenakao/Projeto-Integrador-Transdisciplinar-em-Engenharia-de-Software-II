@@ -29,10 +29,21 @@ def test_validar_cupcake_ok():
     ("ab", "descrição válida aqui", "10"), ("Nome ok", "curta", "10"),
     ("Nome ok", "descrição válida aqui", "0"), ("Nome ok", "descrição válida aqui", "-3"),
     ("Nome ok", "descrição válida aqui", "abc"),
+    ("Nome ok", "descrição válida aqui", "500,01"), ("Nome ok", "descrição válida aqui", "99999999"),
+    ("Nome ok", "descrição válida aqui", "12,345"), ("Nome ok", "descrição válida aqui", "1e2"),
+    ("Nome ok", "descrição válida aqui", "1.000,00"), ("Nome ok", "descrição válida aqui", ""),
 ])
 def test_validar_cupcake_erros(nome, desc, preco):
     _, erros = Cupcake.validar(nome, desc, preco)
     assert erros
+
+
+@pytest.mark.parametrize("texto,esperado", [
+    ("500", "500.00"), ("500,00", "500.00"), ("499.99", "499.99"), ("12,5", "12.50"), ("0,01", "0.01"),
+])
+def test_validar_cupcake_preco_aceito(texto, esperado):
+    preco, erros = Cupcake.validar("Brigadeiro", "Cupcake de brigadeiro cremoso", texto)
+    assert erros == [] and preco == Decimal(esperado)
 
 
 def test_senha_nunca_guardada_em_texto_puro(app):

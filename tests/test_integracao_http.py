@@ -214,4 +214,4 @@ def test_admin_cupcake_invalido(admin_logado, app):
     r = admin_logado.post("/admin/cupcakes/novo", data={"nome": "x", "descricao": "y", "preco": "-1",
                                                         "categoria_id": 1})
     html = texto(r)
-    assert "ao menos 3 caracteres" in html and "maior que zero" in html
+    assert "ao menos 3 caracteres" in html and "preço válido" in html
