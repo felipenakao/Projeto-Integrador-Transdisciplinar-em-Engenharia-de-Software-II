@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block titulo %}Pagamento{% endblock %}
+{% block conteudo %}
+<h1>Pagamento do pedido #{{ pedido.id }}</h1>
+<div class="duas-colunas">
+  <form method="post" class="cartao" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    <fieldset>
+      <legend>Forma de pagamento</legend>
+      <label class="opcao"><input type="radio" name="metodo" value="PIX" checked> Pix (aprovação imediata)</label>
+      <label class="opcao"><input type="radio" name="metodo" value="CARTAO"> Cartão de crédito</label>
+    </fieldset>
+
+    <fieldset id="bloco-cartao">
+      <legend>Dados do cartão</legend>
+      <p class="dica">Ambiente de testes: use um número válido de teste, como <code>4111 1111 1111 1111</code>. Final <code>0002</code> simula recusa. Nada é cobrado nem armazenado.</p>
+      <label for="numero">Número do cartão</label>
+      <input id="numero" name="numero" inputmode="numeric" autocomplete="cc-number" maxlength="23">
+      <label for="titular">Nome impresso no cartão</label>
+      <input id="titular" name="titular" autocomplete="cc-name">
+      <div class="linha">
+        <div><label for="validade">Validade (MM/AA)</label><input id="validade" name="validade" placeholder="12/30" autocomplete="cc-exp" maxlength="5"></div>
+        <div><label for="cvv">CVV</label><input id="cvv" name="cvv" inputmode="numeric" autocomplete="off" maxlength="4"></div>
+      </div>
+    </fieldset>
+    <button class="btn" type="submit">Pagar {{ pedido.total|brl }}</button>
+  </form>
+
+  {% include "pedidos/_resumo.html" %}
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+<aside class="cartao" aria-label="Resumo do pedido">
+  <h2>Resumo</h2>
+  <ul class="resumo">
+    {% for i in pedido.itens %}<li>{{ i.quantidade }}× {{ i.cupcake.nome }} <span>{{ i.total|brl }}</span></li>{% endfor %}
+  </ul>
+  <p>Subtotal: {{ pedido.subtotal|brl }}</p>
+  <p>Entrega: {{ pedido.taxa_entrega|brl }}</p>
+  <p class="total">Total: <strong>{{ pedido.total|brl }}</strong></p>
+  <p class="dica">
+    {% if pedido.tipo_entrega == 'ENTREGA' %}Entrega em: {{ pedido.endereco }}{% else %}Retirada na loja{% endif %}
+  </p>
+</aside>

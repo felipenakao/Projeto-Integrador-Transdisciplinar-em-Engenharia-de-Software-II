@@ -1,0 +1,13 @@
+{
+  "name": "Cupcakes Gourmet",
+  "short_name": "Cupcakes",
+  "description": "Vitrine virtual, pedido, pagamento e entrega de cupcakes gourmet.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fffafc",
+  "theme_color": "#d6336c",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "/static/img/icone.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

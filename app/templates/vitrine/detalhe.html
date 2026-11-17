@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block titulo %}{{ cupcake.nome }}{% endblock %}
+{% block conteudo %}
+<article class="cartao detalhe">
+  <div class="foto grande" aria-hidden="true">{{ cupcake.emoji }}</div>
+  <div>
+    <p class="tag">{{ cupcake.categoria.nome }}</p>
+    <h1>{{ cupcake.nome }}</h1>
+    <p>{{ cupcake.descricao }}</p>
+    <p class="preco">{{ cupcake.preco|brl }}</p>
+    <form method="post" action="{{ url_for('carrinho.adicionar', cupcake_id=cupcake.id) }}" class="linha">
+      <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+      <label for="qtd">Quantidade</label>
+      <input id="qtd" type="number" name="quantidade" value="1" min="1" max="50" required>
+      <button class="btn" type="submit">Adicionar ao carrinho</button>
+    </form>
+    <p><a href="{{ url_for('vitrine.index') }}">← Voltar para a vitrine</a></p>
+  </div>
+</article>
+{% endblock %}

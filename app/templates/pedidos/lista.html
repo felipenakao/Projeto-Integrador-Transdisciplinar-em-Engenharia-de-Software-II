@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block titulo %}Meus pedidos{% endblock %}
+{% block conteudo %}
+<h1>Meus pedidos</h1>
+{% if pedidos %}
+<div class="cartao">
+<table class="tabela">
+  <thead><tr><th>Pedido</th><th>Data</th><th>Total</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+  {% for p in pedidos %}
+    <tr>
+      <td>#{{ p.id }}</td>
+      <td>{{ p.criado_em.strftime('%d/%m/%Y %H:%M') }}</td>
+      <td>{{ p.total|brl }}</td>
+      <td><span class="status s-{{ p.status|lower }}">{{ p.rotulo_status }}</span></td>
+      <td><a href="{{ url_for('pedidos.detalhe', pedido_id=p.id) }}">Ver</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<p class="cartao centro">Você ainda não fez pedidos. <a href="{{ url_for('vitrine.index') }}">Conheça a vitrine</a></p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block titulo %}Pedido #{{ pedido.id }}{% endblock %}
+{% block conteudo %}
+<h1>Pedido #{{ pedido.id }}</h1>
+<p><span class="status s-{{ pedido.status|lower }}">{{ pedido.rotulo_status }}</span></p>
+<div class="duas-colunas">
+  <section class="cartao">
+    <h2>Acompanhamento</h2>
+    {% set etapas = ['AGUARDANDO_PAGAMENTO','PAGO','EM_PREPARO', 'SAIU_PARA_ENTREGA' if pedido.tipo_entrega == 'ENTREGA' else 'PRONTO_PARA_RETIRADA','ENTREGUE'] %}
+    {% if pedido.status == 'CANCELADO' %}
+      <p class="msg erro">Este pedido foi cancelado.</p>
+    {% else %}
+      <ol class="linha-tempo">
+        {% for e in etapas %}
+          {% set atual = etapas.index(pedido.status) if pedido.status in etapas else -1 %}
+          <li class="{{ 'feito' if loop.index0 <= atual }}">{{ rotulos[e] if rotulos is defined else e.replace('_', ' ').capitalize() }}</li>
+        {% endfor %}
+      </ol>
+    {% endif %}
+    {% if pedido.status == 'AGUARDANDO_PAGAMENTO' %}
+      <a class="btn" href="{{ url_for('pedidos.pagar', pedido_id=pedido.id) }}">Pagar agora</a>
+      <form method="post" action="{{ url_for('pedidos.cancelar', pedido_id=pedido.id) }}" class="inline">
+        <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+        <button class="btn perigo" type="submit">Cancelar pedido</button>
+      </form>
+    {% endif %}
+    {% if pedido.pagamento_aprovado %}
+      <p class="dica">Pago via {{ 'Pix' if pedido.pagamento_aprovado.metodo == 'PIX' else 'cartão final ' ~ pedido.pagamento_aprovado.cartao_final }} · transação {{ pedido.pagamento_aprovado.transacao_id }}</p>
+    {% endif %}
+  </section>
+  {% include "pedidos/_resumo.html" %}
+</div>
+{% endblock %}

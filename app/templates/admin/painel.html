@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block titulo %}Painel{% endblock %}
+{% block conteudo %}
+<h1>Painel da loja</h1>
+<p>
+  <a class="btn secundario pequeno" href="{{ url_for('admin.cupcakes') }}">Gerenciar cupcakes</a>
+</p>
+<form method="get" class="filtros">
+  <label for="status">Filtrar por status</label>
+  <select id="status" name="status" onchange="this.form.submit()">
+    <option value="">Todos</option>
+    {% for chave, rotulo in rotulos.items() %}
+      <option value="{{ chave }}" {{ 'selected' if filtro == chave }}>{{ rotulo }}</option>
+    {% endfor %}
+  </select>
+  <noscript><button class="btn" type="submit">Filtrar</button></noscript>
+</form>
+
+{% if pedidos %}
+<div class="cartao">
+<table class="tabela">
+  <thead><tr><th>Pedido</th><th>Cliente</th><th>Tipo</th><th>Total</th><th>Status</th><th>Ação</th></tr></thead>
+  <tbody>
+  {% for p in pedidos %}
+    <tr>
+      <td><a href="{{ url_for('pedidos.detalhe', pedido_id=p.id) }}">#{{ p.id }}</a></td>
+      <td>{{ p.usuario.nome }}<br><small>{{ p.usuario.telefone }}</small></td>
+      <td>{{ 'Entrega' if p.tipo_entrega == 'ENTREGA' else 'Retirada' }}</td>
+      <td>{{ p.total|brl }}</td>
+      <td><span class="status s-{{ p.status|lower }}">{{ p.rotulo_status }}</span></td>
+      <td>
+        {% set proximos = p.proximos_status() %}
+        {% if proximos %}
+        <form method="post" action="{{ url_for('admin.mudar_status', pedido_id=p.id) }}" class="linha">
+          <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+          <label class="sr" for="st{{ p.id }}">Novo status do pedido {{ p.id }}</label>
+          <select id="st{{ p.id }}" name="status">
+            {% for s in proximos %}<option value="{{ s }}">{{ rotulos[s] }}</option>{% endfor %}
+          </select>
+          <button class="btn pequeno" type="submit">Atualizar</button>
+        </form>
+        {% else %}—{% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<p class="cartao centro">Nenhum pedido encontrado.</p>
+{% endif %}
+{% endblock %}

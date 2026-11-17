@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block titulo %}{{ 'Editar' if cupcake else 'Novo' }} cupcake{% endblock %}
+{% block conteudo %}
+<section class="cartao estreito">
+  <h1>{{ 'Editar' if cupcake else 'Novo' }} cupcake</h1>
+  {% set v = form if form else (cupcake or {}) %}
+  <form method="post" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    <label for="nome">Nome</label>
+    <input id="nome" name="nome" value="{{ v.nome if v.nome is defined else v.get('nome', '') }}" required>
+    <label for="descricao">Descrição</label>
+    <textarea id="descricao" name="descricao" rows="3" required>{{ v.descricao if v.descricao is defined else v.get('descricao', '') }}</textarea>
+    <label for="preco">Preço (R$)</label>
+    <input id="preco" name="preco" inputmode="decimal" value="{{ v.preco if v.preco is defined else v.get('preco', '') }}" required>
+    <label for="emoji">Emoji</label>
+    <input id="emoji" name="emoji" maxlength="8" value="{{ v.emoji if v.emoji is defined else v.get('emoji', '🧁') }}">
+    <label for="categoria_id">Categoria</label>
+    <select id="categoria_id" name="categoria_id" required>
+      {% for c in categorias %}
+        <option value="{{ c.id }}" {{ 'selected' if (cupcake and cupcake.categoria_id == c.id and not form) or (form and form.get('categoria_id')|string == c.id|string) }}>{{ c.nome }}</option>
+      {% endfor %}
+    </select>
+    <label class="opcao"><input type="checkbox" name="disponivel" {{ 'checked' if (cupcake.disponivel if cupcake and not form else (form.get('disponivel') == 'on' if form else True)) }}> Disponível na vitrine</label>
+    <button class="btn" type="submit">Salvar</button>
+    <a class="btn secundario" href="{{ url_for('admin.cupcakes') }}">Cancelar</a>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block titulo %}Vitrine{% endblock %}
+{% block conteudo %}
+<h1>Nossa vitrine</h1>
+<form method="get" class="filtros" role="search">
+  <label class="sr" for="q">Buscar cupcake</label>
+  <input id="q" type="search" name="q" value="{{ busca }}" placeholder="Buscar por nome ou ingrediente">
+  <label class="sr" for="categoria">Categoria</label>
+  <select id="categoria" name="categoria">
+    <option value="">Todas as categorias</option>
+    {% for c in categorias %}
+      <option value="{{ c.id }}" {{ 'selected' if categoria_id == c.id }}>{{ c.nome }}</option>
+    {% endfor %}
+  </select>
+  <button class="btn" type="submit">Filtrar</button>
+</form>
+
+{% if cupcakes %}
+<ul class="grade">
+  {% for c in cupcakes %}
+  <li class="cartao produto">
+    <a class="foto" href="{{ url_for('vitrine.detalhe', cupcake_id=c.id) }}" aria-hidden="true" tabindex="-1">{{ c.emoji }}</a>
+    <h2><a href="{{ url_for('vitrine.detalhe', cupcake_id=c.id) }}">{{ c.nome }}</a></h2>
+    <p class="tag">{{ c.categoria.nome }}</p>
+    <p>{{ c.descricao }}</p>
+    <p class="preco">{{ c.preco|brl }}</p>
+    <form method="post" action="{{ url_for('carrinho.adicionar', cupcake_id=c.id) }}">
+      <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+      <input type="hidden" name="quantidade" value="1">
+      <button class="btn" type="submit">Adicionar ao carrinho</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p class="cartao centro">Nenhum cupcake encontrado para esse filtro. <a href="{{ url_for('vitrine.index') }}">Limpar filtros</a></p>
+{% endif %}
+{% endblock %}

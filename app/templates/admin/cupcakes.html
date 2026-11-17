@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block titulo %}Cupcakes (admin){% endblock %}
+{% block conteudo %}
+<h1>Cupcakes</h1>
+<p><a class="btn" href="{{ url_for('admin.cupcake_form') }}">+ Novo cupcake</a>
+   <a class="btn secundario" href="{{ url_for('admin.painel') }}">Pedidos</a></p>
+<div class="cartao">
+<table class="tabela">
+  <thead><tr><th>Nome</th><th>Categoria</th><th>Preço</th><th>Disponível</th><th></th></tr></thead>
+  <tbody>
+  {% for c in cupcakes %}
+    <tr>
+      <td>{{ c.emoji }} {{ c.nome }}</td><td>{{ c.categoria.nome }}</td><td>{{ c.preco|brl }}</td>
+      <td>{{ 'Sim' if c.disponivel else 'Não' }}</td>
+      <td><a href="{{ url_for('admin.cupcake_form', cupcake_id=c.id) }}">Editar</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}
